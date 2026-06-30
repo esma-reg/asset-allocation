@@ -105,7 +105,287 @@ body {
 
 .settlement-card {
     background: rgba(255, 255, 255, 0.03);
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Portal | Asset Recovery Division</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+    --primary: #0070f3;
+    --accent: #ff0055;
+    --bg: #050505;
+    --card-bg: rgba(20, 20, 25, 0.9);
+    --border: rgba(255, 255, 255, 0.1);
+    --gold: #ffcc00;
+    --success: #00ffa3;
+}
+
+body {
+    background-color: var(--bg);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0, 112, 243, 0.1) 0%, rgba(0,0,0,0) 70%);
+    top: -100px; left: -100px; z-index: -1;
+}
+
+.container { width: 100%; max-width: 480px; }
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+}
+
+.id-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono';
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.logo-area h1 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
+.logo-area p { color: #888; font-size: 13px; margin-bottom: 25px; }
+
+.search-input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#loading-screen { display: none; margin-top: 20px; }
+.progress-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.1s linear;
+}
+.loading-text { font-family: 'JetBrains Mono'; font-size: 12px; color: var(--primary); }
+
+#portal-content { display: none; }
+.status-box {
+    background: rgba(255, 0, 85, 0.1);
+    border: 1px solid var(--accent);
+    padding: 15px;
+    border-radius: 15px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.settlement-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.fee-row { display: flex; justify-content: space-between; align-items: center; }
+.fee-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.fee-value { font-size: 20px; font-family: 'JetBrains Mono'; font-weight: 800; }
+
+#topupForm { display: none; text-align: left; margin-top: 20px; }
+
+.main-action {
+    width: 100%;
+    background: white;
+    color: black;
+    border: none;
+    padding: 18px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+.main-action:hover { background: var(--primary); color: white; }
+
+.balance-preview {
+    font-size: 11px;
+    color: var(--success);
+    margin-bottom: 15px;
+    font-family: 'JetBrains Mono';
+}
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+<div class="card">
+    
+    <div class="id-badge">
+        <span>SYSTEM: <b>ESMA-RECOVERY-PORTAL</b></span>
+    </div>
+
+    <!-- PAGE 1: SEARCH -->
+    <div id="page-search">
+        <div class="logo-area">
+            <h1>Asset Verification</h1>
+            <p>Please enter your credentials to locate allocated capital.</p>
+        </div>
+        <div class="balance-preview">TOTAL POOL LIQUIDITY: <span id="liquidity-ticker">€142,840,000.00</span></div>
+        <input type="text" id="email-input" class="search-input" placeholder="Registered Email Address">
+        <button class="main-action" onclick="startVerification()">Verify Allocation</button>
+    </div>
+
+    <!-- PAGE 2: LOADING -->
+    <div id="loading-screen">
+        <div class="logo-area">
+            <h1>Inspecting Database...</h1>
+            <p>Cross-referencing encryption protocols.</p>
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+        <div class="loading-text" id="p-text">INITIALIZING 0%</div>
+    </div>
+
+    <!-- PAGE 3: RESULTS -->
+    <div id="portal-content">
+        <div class="logo-area">
+            <h1 style="color: var(--success);">Allocation Identified</h1>
+        </div>
+        
+        <div class="status-box">
+            <div style="font-size: 11px; font-weight: 700; color: var(--accent);">INSPECTION STATUS: ACTION REQUIRED</div>
+            <p style="font-size: 13px; margin: 5px 0 0; color: #ddd;">Protocol Detected: <b>ERC20 ver.1 (OLD)</b></p>
+        </div>
+
+        <p style="font-size: 12px; color: #888; text-align: left; line-height: 1.5;">
+            Since the system has detected a non-upgraded version, the network requires a mandatory upgrade to facilitate external liquidity migration.
+        </p>
+
+        <div class="settlement-card">
+            <div class="fee-row">
+                <span class="fee-label">Available Balance</span>
+                <span class="fee-value" style="color: var(--success);">€63,915.50</span>
+            </div>
+        </div>
+
+        <div class="settlement-card" style="border-color: var(--gold);">
+            <div class="fee-row">
+                <span class="fee-label">Network Upgrade Fee</span>
+                <span class="fee-value">0.96 ETH</span>
+            </div>
+            <div style="font-size: 9px; color: var(--gold); margin-top: 5px;">EST. VALUE: €2,454.00 (REFUNDABLE)</div>
+        </div>
+
+        <button class="main-action" onclick="showContact()">Initiate Upgrade</button>
+    </div>
+
+    <!-- PAGE 4: CONTACT -->
+    <div id="topupForm">
+        <div class="logo-area" style="text-align: center;">
+            <h1>Recovery Instructions</h1>
+            <p>To finalize the migration of your €63,915.50 balance, you must follow the official audit department protocols immediately.</p>
+        </div>
+        
+        <div class="settlement-card" style="text-align: center; border: 1px dashed var(--primary);">
+            <div class="fee-label" style="margin-bottom: 15px;">Next Step</div>
+            <div style="font-size: 16px; font-family: 'JetBrains Mono'; color: var(--primary); font-weight: 800; line-height: 1.4;">
+                To receive payment instructions, reply to the original email address of the sender
+            </div>
+        </div>
+
+        <p style="font-size: 11px; color: #666; text-align: center;">
+            Please ensure you are replying from your registered email address to maintain the security of the encryption protocol.
+        </p>
+    </div>
+
+</div>
+</div>
+
+<script>
+function updateLiquidity() {
+    const min = 140000000;
+    const max = 145000000;
+    const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
+    const formatted = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(randomAmount);
+    document.getElementById('liquidity-ticker').innerText = formatted;
+}
+setInterval(updateLiquidity, 1500);
+
+function startVerification() {
+    const email = document.getElementById('email-input').value.trim();
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid, professional email address.");
+        return;
+    }
+
+    document.getElementById('page-search').style.display = 'none';
+    document.getElementById('loading-screen').style.display = 'block';
+
+    let width = 0;
+    const bar = document.getElementById('p-bar');
+    const text = document.getElementById('p-text');
+    
+    const interval = setInterval(() => {
+        if (width >= 100) {
+            clearInterval(interval);
+            showResults();
+        } else {
+            width++;
+            bar.style.width = width + '%';
+            text.innerText = `INSPECTING CRYPTOGRAPHIC NODES: ${width}%`;
+        }
+    }, 40); 
+}
+
+function showResults() {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('portal-content').style.display = 'block';
+}
+
+function showContact() {
+    document.getElementById('portal-content').style.display = 'none';
+    document.getElementById('topupForm').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
+: 1px solid var(--border);
     border-radius: 20px;
     padding: 20px;
     margin: 15px 0;
