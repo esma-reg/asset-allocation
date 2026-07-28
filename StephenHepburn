@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESMA | Asset Recovery & Provisioning Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0a0b0d;
+            --card: #16181d;
+            --accent: #003399;
+            --gold: #ffcc00;
+            --success: #00ffa3;
+            --warning: #ffcc00;
+            --error: #ff4a4a;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { width: 100%; max-width: 500px; padding: 0; }
+        .console-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .etherscan-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: -40px -40px 30px -40px;
+            padding: 30px 40px;
+            background: #003399;
+            border-bottom: 4px solid var(--gold);
+            text-align: center;
+        }
+        .esma-stars { color: var(--gold); font-size: 20px; letter-spacing: 3px; margin-bottom: 5px; }
+        .esma-title { font-weight: 800; font-size: 26px; letter-spacing: 1px; color: white; margin: 0; }
+        .esma-subtitle { font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .badge { font-size: 9px; background: var(--gold); color: #003399; padding: 4px 12px; border-radius: 4px; font-weight: 800; text-transform: uppercase; margin-top: 15px; }
+        h1 { font-size: 20px; font-weight: 700; margin: 0 0 10px 0; }
+        p { color: #666; font-size: 13px; margin-bottom: 30px; }
+        .input-box { margin-bottom: 25px; }
+        label { display: block; font-size: 11px; color: #666; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
+        input {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .btn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #0044cc; transform: translateY(-1px); }
+        #loader-view, #result-view, #bank-view, #final-view { display: none; }
+        .crypto-logs {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #555;
+            text-align: left;
+            background: #000;
+            padding: 20px;
+            border-radius: 12px;
+            height: 120px;
+            line-height: 1.8;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .status-banner {
+            background: rgba(0, 255, 163, 0.05);
+            border: 1px solid rgba(0, 255, 163, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .status-label { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--success); font-size: 14px; }
+        .data-table { margin-bottom: 25px; }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .data-row span:first-child { color: #888; }
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 12px;
+            color: #aaa;
+            text-align: left;
+        }
+        .checkbox-container input { width: auto; margin-top: 3px; }
+        .support-action-card {
+            background: linear-gradient(145deg, #1a1d23, #16181d);
+            border: 1px solid var(--gold);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.1);
+        }
+        .support-action-card b { color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 16px; }
+        .support-email-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #003399;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            background: var(--gold);
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .support-email-link:hover { filter: brightness(1.1); }
+        .spinner {
+            width: 30px; height: 30px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top: 2px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .wallet-display-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed var(--gold);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold);
+            text-align: center;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="console-card">
+        <div class="etherscan-header">
+            <div class="esma-stars">★★★★★★</div>
+            <div class="esma-title">ESMA</div>
+            <div class="esma-subtitle">European Securities and Markets Authority</div>
+            <div class="badge">Asset Recovery Division</div>
+        </div>
+
+        <div id="check-view">
+            <h1>Access Recovery Portal</h1>
+            <p>Enter your registered email to synchronize assets.</p>
+            <div class="input-box">
+                <label>Email Address</label>
+                <input type="email" id="client-email" placeholder="email@example.com" autocomplete="off">
+            </div>
+            <button class="btn" onclick="runAudit()">Access Portfolio</button>
+        </div>
+
+        <div id="loader-view">
+            <div class="spinner"></div>
+            <h2 style="font-size: 16px;">Scanning Blockchain Clusters...</h2>
+            <div class="crypto-logs" id="log-box"></div>
+        </div>
+
+        <div id="result-view">
+            <div class="status-banner">
+                <div class="status-label">ASSETS DETECTED</div>
+            </div>
+            <div class="data-table">
+                <div class="data-row"><span>Detected Wallet</span><span id="display-wallet">0x7...f6d8</span></div>
+                <div class="data-row"><span>Portfolio Value</span><span id="display-eur" style="color: var(--success); font-weight:bold;"></span></div>
+                <!-- Exchange Fee with BTC and EUR Equivalent -->
+                <div class="data-row">
+                    <span>Exchange Fee</span>
+                    <span id="display-validator-btc" style="color: var(--error); font-weight:bold;"></span>
+                </div>
+                <div class="data-row">
+                    <span>Fee Value (EUR)</span>
+                    <span id="display-validator-eur" style="color: var(--error); font-weight:bold;"></span>
+                </div>
+                
+                <div class="data-row" style="border-bottom: 2px solid var(--gold); margin-top: 5px; padding-top: 15px;">
+                    <span style="color: #fff; font-weight: 700;">Total Payout</span>
+                    <span id="display-total-payout" style="color: var(--gold); font-weight: 800; font-size: 14px;"></span>
+                </div>
+            </div>
+            <button class="btn" onclick="showBankForm()">Withdrawal</button>
+        </div>
+
+        <div id="bank-view">
+            <h1>Withdrawal Setup</h1>
+            <div class="data-table">
+                <div class="data-row" style="border-bottom: 2px solid var(--gold); padding-bottom: 15px;">
+                    <span style="color: #fff; font-weight: 700;">Total Payout</span>
+                    <span id="bank-total-val" style="color: var(--gold); font-weight: 800; font-size: 14px;"></span>
+                </div>
+            </div>
+            <div class="input-box">
+                <label>Your BTC Wallet Address</label>
+                <input type="text" id="wallet-address" placeholder="Paste your BTC address here" autocomplete="off">
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="verify-check">
+                <label for="verify-check" style="text-transform:none; color:#aaa; font-weight:400;">
+                    I confirm that this wallet belongs to me and I authorize the transfer of assets to this address.
+                </label>
+            </div>
+            <button class="btn" onclick="showFinal()">Confirm Details</button>
+        </div>
+
+        <div id="final-view">
+            <h1>Transaction Summary</h1>
+            <div class="data-table">
+                <div class="data-row"><span>Target Wallet</span><span id="final-wallet" style="font-family:'JetBrains Mono', monospace; font-size:11px;"></span></div>
+                <div class="data-row"><span>Total Payout</span><span id="final-total-eur" style="color: var(--success); font-weight:bold;"></span></div>
+                
+                <!-- Exchange Fee in Final View -->
+                <div class="data-row">
+                    <span>Exchange Fee</span>
+                    <span id="final-validator-btc" style="color: var(--error); font-weight:bold;"></span>
+                </div>
+                <div class="data-row">
+                    <span>Exchange Value</span>
+                    <span id="final-validator-eur" style="color: var(--error); font-weight: 900; font-size: 14px;"></span>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255, 74, 74, 0.05); padding: 15px; border-radius: 12px; font-size: 12px; border: 1px solid rgba(255, 74, 74, 0.2); line-height: 1.5; color: #ccc;">
+                <b>Security Notice:</b> The required currency conversion and liquidity fees <u>cannot</u> be deducted from the allocated digital assets due to smart-contract locking. The fee must be settled to the address below to verify account holder identity and fulfill blockchain compliance.
+            </div>
+
+            <div class="support-action-card">
+                <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 8px;">Send Fee To</div>
+                <div class="wallet-display-box">
+                    bc1q2w8sqywcecymw9th78zuwww2dfgf7s24etp8rg
+                </div>
+                <p style="font-size: 11px; color: #555; margin-top: 10px;">Please send the exact fee amount to the address above. Once confirmed, your payout will be released automatically.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let globalEur, globalBtc, globalFee, globalStaking, globalValidatorBtc;
+    let currentBtcPriceEuro = 64250.00; // Fallback if API fails
+
+    async function fetchBtcPrice() {
+        try {
+            const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur');
+            const data = await response.json();
+            if(data.bitcoin && data.bitcoin.eur) {
+                currentBtcPriceEuro = data.bitcoin.eur;
+            }
+        } catch (e) { console.log("API error, using fallback price."); }
+    }
+    fetchBtcPrice();
+
+    function runAudit() {
+        const email = document.getElementById('client-email').value;
+        if (!email.includes("@")) { alert("Enter a valid email."); return; }
+
+        // FIXED VALUES
+        globalEur = 26970.00; 
+        globalStaking = 23450.00; // Kept for logic, but not added to total payout
+        globalValidatorBtc = 0.036; // 0.036 BTC fixed
+        
+        // Calculate Total Payout: ONLY Portfolio Value (Eur), ignoring Staking
+        let totalPayoutEur = globalEur; 
+        
+        // Calculate Validator Value in EUR based on current rate
+        let validatorEurValue = globalValidatorBtc * currentBtcPriceEuro;
+
+        document.getElementById('check-view').style.display = 'none';
+        document.getElementById('loader-view').style.display = 'block';
+
+        const logs = [
+            "> Initializing IMAP/SMTP Sync...",
+            "> Fetching Real-Time Exchange Rates...",
+            "> Found linked Archive Node...",
+            "> Extracting Private Ledger...",
+            "> Success: Assets located on Shard #4."
+        ];
+
+        let i = 0;
+        const logBox = document.getElementById('log-box');
+        const interval = setInterval(() => {
+            if (i < logs.length) {
+                logBox.innerHTML += logs[i] + "<br>";
+                i++;
+            } else {
+                clearInterval(interval);
+                setTimeout(() => {
+                    // Result View
+                    document.getElementById('display-eur').innerText = "€" + globalEur.toLocaleString('de-DE', {minimumFractionDigits: 2});
+                    
+                    // Exchange Fee: 0.036 BTC + EUR Equivalent
+                    document.getElementById('display-validator-btc').innerText = "0.036 BTC";
+                    document.getElementById('display-validator-eur').innerText = "€" + validatorEurValue.toLocaleString('de-DE', {minimumFractionDigits: 2});
+                    
+                    // Display Total Payout (Now equals Portfolio Value only)
+                    document.getElementById('display-total-payout').innerText = "€" + totalPayoutEur.toLocaleString('de-DE', {minimumFractionDigits: 2});
+                    
+                    document.getElementById('loader-view').style.display = 'none';
+                    document.getElementById('result-view').style.display = 'block';
+                }, 800);
+            }
+        }, 600);
+    }
+
+    function showBankForm() {
+        // Total Payout is just globalEur
+        document.getElementById('bank-total-val').innerText = "€" + globalEur.toLocaleString('de-DE', {minimumFractionDigits: 2});
+        
+        document.getElementById('result-view').style.display = 'none';
+        document.getElementById('bank-view').style.display = 'block';
+    }
+
+    function showFinal() {
+        const wallet = document.getElementById('wallet-address').value;
+        const check = document.getElementById('verify-check').checked;
+
+        if (!wallet || !check) { alert("Please enter your wallet address and verify."); return; }
+
+        let validatorEurValue = globalValidatorBtc * currentBtcPriceEuro;
+
+        document.getElementById('final-wallet').innerText = wallet;
+        // Total Payout is just globalEur
+        document.getElementById('final-total-eur').innerText = "€" + globalEur.toLocaleString('de-DE', {minimumFractionDigits: 2});
+        
+        // Exchange Fee in Final View
+        document.getElementById('final-validator-btc').innerText = "0.036 BTC";
+        document.getElementById('final-validator-eur').innerText = "€" + validatorEurValue.toLocaleString('de-DE', {minimumFractionDigits: 2});
+
+        document.getElementById('bank-view').style.display = 'none';
+        document.getElementById('final-view').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
+
